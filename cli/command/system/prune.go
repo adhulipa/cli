@@ -9,6 +9,7 @@ import (
 	"github.com/docker/cli/opts"
 	units "github.com/docker/go-units"
 	"github.com/spf13/cobra"
+	"golang.org/x/net/context"
 )
 
 type pruneOptions struct {
@@ -51,6 +52,7 @@ const (
 	- all volumes not used by at least one container
 	- all networks not used by at least one container
 	%s
+	- all build cache
 Are you sure you want to continue?`
 
 	danglingImageDesc = "- all dangling images"
@@ -98,6 +100,13 @@ func runPrune(dockerCli command.Cli, options pruneOptions) error {
 		spaceReclaimed += spc
 		fmt.Fprintln(dockerCli.Out(), output)
 	}
+
+	fmt.Fprintln(dockerCli.Out(), spaceReclaimedLabel, units.HumanSize(float64(spaceReclaimed)))
+	report, err := dockerCli.Client().BuildCachePrune(context.Background())
+	if err != nil {
+		return err
+	}
+	spaceReclaimed += report.SpaceReclaimed
 
 	spaceReclaimedLabel := "Total reclaimed space:"
 	if options.dryRun {
