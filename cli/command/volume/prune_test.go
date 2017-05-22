@@ -81,6 +81,37 @@ func TestVolumePruneForce(t *testing.T) {
 		testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
 	}
 }
+
+func TestVolumePruneDryRun(t *testing.T) {
+	testCases := []struct {
+		name            string
+		volumePruneFunc func(args filters.Args) (types.VolumesPruneReport, error)
+	}{
+		{
+			name: "dryRunEmpty",
+		},
+		{
+			name: "dryRunDeleteVolumes",
+			volumePruneFunc: simplePruneFunc,
+		},
+	}
+
+	for _, tc := range testCases {
+		buf := new(bytes.Buffer)
+		cmd := NewPruneCommand(
+			test.NewFakeCli(&fakeClient{
+				volumePruneFunc: tc.volumePruneFunc,
+			}, buf),
+		)
+		cmd.Flags().Set("dry-run", "true")
+		assert.NoError(t, cmd.Execute())
+		actual := buf.String()
+		expected := golden.Get(t, []byte(actual), fmt.Sprintf("volume-prune.%s.golden", tc.name))
+		testutil.EqualNormalizedString(t, testutil.RemoveSpace, actual, string(expected))
+	}
+
+}
+
 func TestVolumePrunePromptYes(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		// FIXME(vdemeester) make it work..
