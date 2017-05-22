@@ -12,10 +12,11 @@ import (
 )
 
 type pruneOptions struct {
-	force  bool
-	all    bool
+	force        bool
+	all          bool
+	pruneVolumes bool
+	filter       opts.FilterOpt
 	dryRun bool
-	filter opts.FilterOpt
 }
 
 // NewPruneCommand creates a new cobra.Command for `docker prune`
@@ -36,6 +37,7 @@ func NewPruneCommand(dockerCli command.Cli) *cobra.Command {
 	flags.BoolVarP(&options.force, "force", "f", false, "Do not prompt for confirmation")
 	flags.BoolVarP(&options.all, "all", "a", false, "Remove all unused images not just dangling ones")
 	flags.BoolVarP(&options.dryRun, "dry-run", "n", false, "Display prune report without removing anything")
+	flags.BoolVar(&options.pruneVolumes, "volumes", false, "Prune volumes")
 	flags.Var(&options.filter, "filter", "Provide filter values (e.g. 'label=<key>=<value>')")
 	// "filter" flag is available in 1.28 (docker 17.04) and up
 	flags.SetAnnotation("filter", "version", []string{"1.28"})
@@ -69,12 +71,15 @@ func runPrune(dockerCli command.Cli, options pruneOptions) error {
 	}
 
 	var spaceReclaimed uint64
-
-	for _, pruneFn := range []func(dockerCli command.Cli, dryRun bool, filter opts.FilterOpt) (uint64, string, error){
+	pruneFuncs := []func(dockerCli command.Cli, dryRun bool, filter opts.FilterOpt) (uint64, string, error){
 		prune.RunContainerPrune,
-		prune.RunVolumePrune,
 		prune.RunNetworkPrune,
-	} {
+	}
+	if options.pruneVolumes {
+		pruneFuncs = append(pruneFuncs, prune.RunVolumePrune)
+	}
+
+	for _, pruneFn := range pruneFuncs {
 		spc, output, err := pruneFn(dockerCli, options.dryRun, options.filter)
 		if err != nil {
 			return err
