@@ -23,6 +23,7 @@ type pruneOptions struct {
 	all             bool
 	pruneBuildCache bool
 	pruneVolumes    bool
+	dryRun 			bool
 	filter          opts.FilterOpt
 	dryRun bool
 }
@@ -104,23 +105,6 @@ func runPrune(dockerCli command.Cli, options pruneOptions) error {
 		if output != "" {
 			fmt.Fprintln(dockerCli.Out(), output)
 		}
-	}
-
-	spc, output, err := runImagePrune(dockerCli, options.all, options.dryRun, options.filter)
-	if err != nil {
-		return err
-	}
-	if spc > 0 {
-		spaceReclaimed += spc
-		fmt.Fprintln(dockerCli.Out(), output)
-	}
-
-	if options.pruneBuildCache {
-		report, err := dockerCli.Client().BuildCachePrune(context.Background())
-		if err != nil {
-			return err
-		}
-		spaceReclaimed += report.SpaceReclaimed
 	}
 
 	spaceReclaimedLabel := "Total reclaimed space:"
