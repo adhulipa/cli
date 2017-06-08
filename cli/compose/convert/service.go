@@ -45,7 +45,7 @@ func Services(
 			return nil, errors.Wrapf(err, "service %s", service.Name)
 		}
 
-		serviceSpec, err := convertService(client.ClientVersion(), namespace, service, networks, volumes, secrets, configs)
+		serviceSpec, err := Service(client.ClientVersion(), namespace, service, networks, volumes, secrets, configs)
 		if err != nil {
 			return nil, errors.Wrapf(err, "service %s", service.Name)
 		}
@@ -55,7 +55,8 @@ func Services(
 	return result, nil
 }
 
-func convertService(
+// Service converts a ServiceConfig into a swarm ServiceSpec
+func Service(
 	apiVersion string,
 	namespace Namespace,
 	service composetypes.ServiceConfig,
