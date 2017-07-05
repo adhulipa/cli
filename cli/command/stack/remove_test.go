@@ -1,7 +1,6 @@
 package stack
 
 import (
-	"bytes"
 	"errors"
 	"io/ioutil"
 	"strings"
@@ -48,7 +47,7 @@ func TestRemoveStack(t *testing.T) {
 		secrets:  allSecrets,
 		configs:  allConfigs,
 	}
-	cmd := newRemoveCommand(test.NewFakeCliWithOutput(cli, &bytes.Buffer{}))
+	cmd := newRemoveCommand(test.NewFakeCli(cli))
 	cmd.SetArgs([]string{"foo", "bar"})
 
 	assert.NoError(t, cmd.Execute())
@@ -155,7 +154,7 @@ func TestRemoveContinueAfterError(t *testing.T) {
 			return nil
 		},
 	}
-	cmd := newRemoveCommand(test.NewFakeCliWithOutput(cli, &bytes.Buffer{}))
+	cmd := newRemoveCommand(test.NewFakeCli(cli))
 	cmd.SetOutput(ioutil.Discard)
 	cmd.SetArgs([]string{"foo", "bar"})
 
