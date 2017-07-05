@@ -38,7 +38,7 @@ func TestNewPruneCommandErrors(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		buf := new(bytes.Buffer)
-		cmd := NewPruneCommand(test.NewFakeCli(&fakeClient{
+		cmd := NewPruneCommand(test.NewFakeCliWithOutput(&fakeClient{
 			imagesPruneFunc: tc.imagesPruneFunc,
 		}, buf))
 		cmd.SetOutput(ioutil.Discard)
@@ -97,7 +97,7 @@ func TestNewPruneCommandSuccess(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		buf := new(bytes.Buffer)
-		cmd := NewPruneCommand(test.NewFakeCli(&fakeClient{
+		cmd := NewPruneCommand(test.NewFakeCliWithOutput(&fakeClient{
 			imagesPruneFunc: tc.imagesPruneFunc,
 		}, buf))
 		cmd.SetOutput(ioutil.Discard)
