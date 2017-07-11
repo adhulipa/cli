@@ -3256,7 +3256,6 @@ _docker_service_update_and_create() {
 		--log-driver
 		--log-opt
 		--mount
-		--network
 		--replicas
 		--reserve-cpu
 		--reserve-memory
@@ -3306,6 +3305,7 @@ _docker_service_update_and_create() {
 			--host
 			--mode
 			--name
+			--network
 			--placement-pref
 			--publish -p
 			--secret
