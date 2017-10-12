@@ -55,12 +55,12 @@ func runPrune(dockerCli command.Cli, options pruneOptions) (spaceReclaimed uint6
 	pruneFilters.Add("dryRun", fmt.Sprintf("%v", options.dryRun))
 
 	if !options.force && !options.dryRun && !command.PromptForConfirmation(dockerCli.In(), dockerCli.Out(), warning) {
-		return
+		return 0, "", nil
 	}
 
 	report, err := dockerCli.Client().ContainersPrune(context.Background(), pruneFilters)
 	if err != nil {
-		return
+		return 0, "", err
 	}
 
 	if len(report.ContainersDeleted) > 0 {
@@ -74,7 +74,7 @@ func runPrune(dockerCli command.Cli, options pruneOptions) (spaceReclaimed uint6
 		spaceReclaimed = report.SpaceReclaimed
 	}
 
-	return
+	return spaceReclaimed, output, nil
 }
 
 // RunPrune calls the Container Prune API
