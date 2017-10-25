@@ -41,7 +41,7 @@ func NewPruneCommand(dockerCli command.Cli) *cobra.Command {
 			fmt.Fprintln(dockerCli.Out(), spaceReclaimedLabel, units.HumanSize(float64(spaceReclaimed)))
 			return nil
 		},
-		Tags: map[string]string{"version": "1.25"},
+		Annotations: map[string]string{"version": "1.25"},
 	}
 
 	flags := cmd.Flags()
