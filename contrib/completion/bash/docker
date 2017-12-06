@@ -1466,6 +1466,9 @@ _docker_container_exec() {
 			__docker_complete_user_group
 			return
 			;;
+		--workdir|-w)
+			return
+			;;
 	esac
 
 	case "$cur" in
