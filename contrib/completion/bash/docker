@@ -2242,6 +2242,7 @@ _docker_daemon() {
 		--metrics-addr
 		--mtu
 		--network-control-plane-mtu
+		--node-generic-resource
 		--oom-score-adjust
 		--pidfile -p
 		--registry-mirror
@@ -3416,6 +3417,7 @@ _docker_service_update_and_create() {
 			--dns-option
 			--dns-search
 			--env-file
+			--generic-resource
 			--group
 			--host
 			--mode
@@ -3477,6 +3479,8 @@ _docker_service_update_and_create() {
 			--dns-rm
 			--dns-search-add
 			--dns-search-rm
+			--generic-resource-add
+			--generic-resource-rm
 			--group-add
 			--group-rm
 			--host-add
