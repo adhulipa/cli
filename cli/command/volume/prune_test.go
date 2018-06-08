@@ -11,10 +11,10 @@ import (
 	"github.com/docker/cli/internal/test"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
-	"github.com/gotestyourself/gotestyourself/assert"
-	"github.com/gotestyourself/gotestyourself/golden"
-	"github.com/gotestyourself/gotestyourself/skip"
 	"github.com/pkg/errors"
+	"gotest.tools/assert"
+	"gotest.tools/golden"
+	"gotest.tools/skip"
 )
 
 func TestVolumePruneErrors(t *testing.T) {
@@ -110,7 +110,7 @@ func TestVolumePruneDryRun(t *testing.T) {
 
 func TestVolumePrunePromptYes(t *testing.T) {
 	// FIXME(vdemeester) make it work..
-	skip.IfCondition(t, runtime.GOOS == "windows", "TODO: fix test on windows")
+	skip.If(t, runtime.GOOS == "windows", "TODO: fix test on windows")
 
 	for _, input := range []string{"y", "Y"} {
 		cli := test.NewFakeCli(&fakeClient{
@@ -126,7 +126,7 @@ func TestVolumePrunePromptYes(t *testing.T) {
 
 func TestVolumePrunePromptNo(t *testing.T) {
 	// FIXME(vdemeester) make it work..
-	skip.IfCondition(t, runtime.GOOS == "windows", "TODO: fix test on windows")
+	skip.If(t, runtime.GOOS == "windows", "TODO: fix test on windows")
 
 	for _, input := range []string{"n", "N", "no", "anything", "really"} {
 		cli := test.NewFakeCli(&fakeClient{
